@@ -566,15 +566,23 @@ body {
   width: min(100% - 1rem, 90vw);
   height: min(95vh, 95dvh);
   justify-content: center;
-  position: relative;
 }
 
-.lightbox-image-wrapper {
+.lightbox-image-area {
   flex: 1 1 auto;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   min-width: 0;
+}
+
+.lightbox-image-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  max-height: 100%;
   position: relative;
 }
 
@@ -1067,6 +1075,10 @@ body {
   .lightbox-content {
     flex-direction: column;
     max-width: 95vw;
+  }
+
+  .lightbox-image-area {
+    flex: 0 0 auto;
   }
 
   .lightbox-image {
