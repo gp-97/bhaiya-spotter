@@ -61,15 +61,16 @@ function showError(message) {
   }
 }
 
-supabase.auth.onAuthStateChange((event, session) => {
-  updateUI(session?.user ?? null);
-});
-
 if (typeof window !== 'undefined') {
   window.supabaseAuth = { signUp, signIn, signOut, getCurrentUser, showError };
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  if (typeof supabase === 'undefined' || !supabase) {
+    showError('Unable to connect to Supabase. Please refresh the page.');
+    return;
+  }
+
   const loginForm = document.getElementById('loginForm');
   const signupForm = document.getElementById('signupForm');
   const signoutBtn = document.getElementById('signoutBtn');
@@ -125,5 +126,15 @@ document.addEventListener('DOMContentLoaded', () => {
     signoutBtn.addEventListener('click', () => signOut());
   }
 
-  getCurrentUser().then(user => updateUI(user));
+  try {
+    supabase.auth.onAuthStateChange((event, session) => {
+      updateUI(session?.user ?? null);
+    });
+  } catch (e) {
+    console.warn('Auth state listener not set up:', e.message);
+  }
+
+  getCurrentUser().then(user => updateUI(user)).catch(() => {
+    updateUI(null);
+  });
 });
