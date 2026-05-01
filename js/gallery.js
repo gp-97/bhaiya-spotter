@@ -199,7 +199,7 @@ function renderCommentItem(c, isReply, voteData) {
         <button class="comment-vote-btn ${vd.userVote === -1 ? 'active' : ''}" data-vote="-1">
           &#9660;
         </button>
-        ${!isReply ? '<button class="reply-btn">Reply</button>' : ''}
+        <button class="reply-btn">Reply</button>
       </div>
       <div class="reply-box hidden">
         <textarea class="reply-input" rows="2" placeholder="Write a reply..."></textarea>
@@ -217,22 +217,21 @@ function renderCommentItem(c, isReply, voteData) {
     });
   });
 
-  if (!isReply) {
-    const replyBtn = div.querySelector('.reply-btn');
-    const replyBox = div.querySelector('.reply-box');
-    const replyInput = div.querySelector('.reply-input');
-    const replyCancel = div.querySelector('.reply-cancel');
-    const replySubmit = div.querySelector('.reply-submit');
+  const replyBtn = div.querySelector('.reply-btn');
+  const replyBox = div.querySelector('.reply-box');
+  const replyInput = div.querySelector('.reply-input');
+  const replyCancel = div.querySelector('.reply-cancel');
+  const replySubmit = div.querySelector('.reply-submit');
 
-    replyBtn.addEventListener('click', () => {
-      replyBox.classList.toggle('hidden');
-      if (!replyBox.classList.contains('hidden')) replyInput.focus();
-    });
+  replyBtn.addEventListener('click', () => {
+    replyBox.classList.toggle('hidden');
+    if (!replyBox.classList.contains('hidden')) replyInput.focus();
+  });
 
-    replyCancel.addEventListener('click', () => {
-      replyBox.classList.add('hidden');
-      replyInput.value = '';
-    });
+  replyCancel.addEventListener('click', () => {
+    replyBox.classList.add('hidden');
+    replyInput.value = '';
+  });
 
     replySubmit.addEventListener('click', async () => {
       const content = replyInput.value.trim();
@@ -251,7 +250,6 @@ function renderCommentItem(c, isReply, voteData) {
         replySubmit.disabled = false;
       }
     });
-  }
 
   return div;
 }
