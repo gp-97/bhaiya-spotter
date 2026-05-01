@@ -23,6 +23,7 @@ async function signIn(email, password) {
 
 async function signOut() {
   await supabase.auth.signOut();
+  window.location.href = 'index.html';
 }
 
 async function getCurrentUser() {
