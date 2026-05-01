@@ -46,7 +46,7 @@ function avatarHtml(name) {
 async function fetchGallery(offset, limit) {
   const { data, error } = await supabase
     .from('submissions')
-    .select(`id, image_url, uploaded_at, profiles(display_name)`)
+    .select(`id, image_url, uploaded_at, user_id, profiles(display_name)`)
     .order('uploaded_at', { ascending: false })
     .range(offset, offset + limit - 1);
   if (error) throw error;
@@ -104,6 +104,15 @@ function openLightbox(index) {
   document.getElementById('lightbox').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 
+  const deleteBtn = document.getElementById('deleteSubmissionBtn');
+  if (deleteBtn) {
+    if (item.user_id === currentUserId) {
+      deleteBtn.classList.remove('hidden');
+    } else {
+      deleteBtn.classList.add('hidden');
+    }
+  }
+
   loadComments(item.id);
   loadVotes(item.id);
 }
@@ -134,7 +143,7 @@ async function loadComments(submissionId) {
 
   const { data, error } = await supabase
     .from('comments')
-    .select(`id, content, created_at, parent_id, profiles(display_name)`)
+    .select(`id, content, created_at, parent_id, user_id, profiles(display_name)`)
     .eq('submission_id', submissionId)
     .order('created_at', { ascending: true });
 
@@ -188,6 +197,7 @@ function renderCommentItem(c, isReply, voteData) {
       <div class="comment-header">
         <span class="comment-name">${escapeHtml(c.profiles.display_name)}</span>
         <span class="comment-time">${timeAgo(c.created_at)}</span>
+        ${c.user_id === currentUserId ? '<button class="comment-delete-btn" title="Delete">&times;</button>' : ''}
       </div>
       <p class="comment-content">${escapeHtml(c.content)}</p>
       <div class="comment-actions">
@@ -215,6 +225,16 @@ function renderCommentItem(c, isReply, voteData) {
       handleCommentVote(c.id, parseInt(btn.dataset.vote));
     });
   });
+
+  const deleteCommentBtn = div.querySelector('.comment-delete-btn');
+  if (deleteCommentBtn) {
+    deleteCommentBtn.addEventListener('click', async () => {
+      if (!confirm('Delete this comment?')) return;
+      const item = loadedPhotos[lightboxIndex];
+      if (!item) return;
+      await deleteComment(c.id, item.id);
+    });
+  }
 
   const replyBtn = div.querySelector('.reply-btn');
   const replyBox = div.querySelector('.reply-box');
@@ -355,6 +375,23 @@ async function handleCommentVote(commentId, value) {
   if (item) loadComments(item.id);
 }
 
+async function deleteComment(commentId, submissionId) {
+  await supabase.from('comments').delete().eq('id', commentId);
+  await loadComments(submissionId);
+}
+
+async function deleteSubmission(submissionId) {
+  if (!confirm('Delete this photo permanently?')) return;
+  const item = loadedPhotos.find(p => p.id === submissionId);
+  if (item) {
+    const path = new URL(item.image_url).pathname.split('/').slice(-2).join('/').replace('/object/public/submissions/', '');
+    await supabase.storage.from('submissions').remove([decodeURIComponent(path)]);
+    await supabase.from('submissions').delete().eq('id', submissionId);
+    closeLightbox();
+    location.reload();
+  }
+}
+
 async function loadMore() {
   if (loading || !hasMore) return;
   loading = true;
@@ -457,6 +494,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('voteUpBtn')?.addEventListener('click', () => {
     const item = loadedPhotos[lightboxIndex];
     if (item) handleVote(item.id, 1);
+  });
+
+  document.getElementById('deleteSubmissionBtn')?.addEventListener('click', () => {
+    const item = loadedPhotos[lightboxIndex];
+    if (item) deleteSubmission(item.id);
   });
 
   if (document.getElementById('galleryGrid')) loadMore();
