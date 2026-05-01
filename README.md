@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.jpeg" alt="Bhaiya Radar" width="120" style="border-radius: 16px">
+  <img src="assets/logo.jpeg" alt="Bhaiya Radar" width="120" style="border-radius: 16px;">
 </p>
 
 <h1 align="center">Bhaiya Radar</h1>
