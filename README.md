@@ -49,6 +49,7 @@ A gamified photo-spotting leaderboard where players compete by uploading photos 
 └── .github/workflows/
     ├── deploy.yml          # GitHub Pages deployment
     └── keep-alive.yml      # Supabase inactivity prevention
+```
 ## 📄 License
 
 MIT
