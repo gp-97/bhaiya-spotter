@@ -588,29 +588,30 @@ body::before {
 /* Gallery */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(clamp(14rem, 28vw, 18rem), 1fr));
-  gap: clamp(0.5rem, 1.5vw, 1rem);
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(2px, 0.5vw, 4px);
 }
 
 .gallery-card {
   background: var(--surface);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border: none;
+  border-radius: 0;
   overflow: hidden;
-  transition: box-shadow 0.2s, transform 0.2s;
+  transition: opacity 0.2s;
 }
 
 .gallery-card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-1px);
+  opacity: 0.85;
+  transform: none;
 }
 
 .gallery-card-image {
   aspect-ratio: 1 / 1;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.03);
+  cursor: pointer;
 }
 
 .gallery-card-image img {
@@ -618,56 +619,27 @@ body::before {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.4s ease;
+  transition: transform 0.3s ease;
 }
 
 .gallery-card:hover .gallery-card-image img {
-  transform: scale(1.04);
+  transform: scale(1.03);
 }
 
 .gallery-card-info {
-  padding: clamp(0.5rem, 1.5vw, 0.65rem) clamp(0.6rem, 2vw, 0.75rem);
-  display: flex;
-  align-items: center;
-  gap: clamp(0.25rem, 1vw, 0.4rem);
-}
-
-.gallery-card-name {
-  font-weight: 600;
-  font-size: clamp(0.75rem, 2.2vw, 0.85rem);
-  color: var(--text);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex: 1;
-  min-width: 0;
+  display: none;
 }
 
 .gallery-card-votes {
-  display: flex;
-  align-items: center;
-  gap: 0.15rem;
-  flex-shrink: 0;
-}
-
-.card-vote-icon {
-  font-size: clamp(0.8rem, 2vw, 0.9rem);
-  line-height: 1;
-}
-
-.card-vote-count {
-  color: var(--text);
-  font-size: clamp(0.72rem, 2vw, 0.8rem);
-  font-weight: 600;
-  min-width: 1.2rem;
-  text-align: center;
+  display: none;
 }
 
 .gallery-card-time {
-  font-size: clamp(0.65rem, 1.8vw, 0.75rem);
-  color: var(--text-muted);
-  white-space: nowrap;
-  flex-shrink: 0;
+  display: none;
+}
+
+.gallery-card-name {
+  display: none;
 }
 
 .gallery-card:hover {
@@ -1513,7 +1485,14 @@ body::before {
   }
 
   .gallery-grid {
-    gap: 0.5rem;
+    gap: 2px;
+  }
+}
+
+@media (max-width: 30rem) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
   }
 
   .recent-grid {

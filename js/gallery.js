@@ -81,10 +81,10 @@ function renderPhoto(item, index) {
     </div>
     <div class="gallery-card-info">
       <span class="gallery-card-name">${escapeHtml(item.profiles.display_name)}</span>
-      <div class="gallery-card-votes">
+      <span class="gallery-card-votes">
         <span class="card-vote-icon">&#10084;&#65039;</span>
         <span class="card-vote-count">${score}</span>
-      </div>
+      </span>
       <span class="gallery-card-time">${timeAgo(item.uploaded_at)}</span>
     </div>`;
   card.querySelector('.gallery-card-image').addEventListener('click', () => openLightbox(index));
