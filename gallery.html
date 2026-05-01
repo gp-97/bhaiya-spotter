@@ -18,8 +18,14 @@
         <a href="index.html" class="nav-link">Leaderboard</a>
         <a href="gallery.html" class="nav-link active">Gallery</a>
         <a href="upload.html" class="nav-link">Upload</a>
-        <span class="nav-user" id="navUser"></span>
-        <button id="navSignoutBtn" class="nav-signout hidden" title="Sign Out">&#10140;</button>
+        <button id="userMenuBtn" class="user-menu-btn hidden">
+          <span class="avatar avatar-xs" id="userMenuAvatar"></span>
+          <span id="userMenuName"></span>
+          <span class="dropdown-arrow">&#9660;</span>
+        </button>
+        <div id="userDropdown" class="user-dropdown hidden">
+          <button id="navSignoutBtn" class="dropdown-item">Sign Out</button>
+        </div>
       </div>
     </div>
   </nav>

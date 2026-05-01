@@ -67,6 +67,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  position: relative;
 }
 
 .nav-link {
@@ -86,28 +87,76 @@ body {
 }
 
 .nav-user {
-  margin-left: 8px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
+  display: none;
 }
 
 .nav-signout {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 4px 8px;
-  border-radius: var(--radius);
-  font-size: 1rem;
-  line-height: 1;
-  transition: all 0.15s;
-  margin-left: 4px;
+  display: none;
 }
 
-.nav-signout:hover {
+.user-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+  transition: all 0.15s;
+  position: relative;
+}
+
+.user-menu-btn:hover {
+  background: #f8fafc;
+  border-color: var(--primary);
+}
+
+.dropdown-arrow {
+  font-size: 0.6rem;
+  color: var(--text-muted);
+  transition: transform 0.15s;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 4px;
+  margin-top: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  min-width: 160px;
+  z-index: 200;
+  overflow: hidden;
+}
+
+.dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  text-align: left;
+  cursor: pointer;
+  color: var(--text);
+  transition: background 0.1s;
+}
+
+.dropdown-item:hover {
+  background: #f1f5f9;
   color: var(--error);
-  border-color: var(--error);
-  background: var(--error-bg);
+}
+
+.avatar-xs {
+  width: 26px;
+  height: 26px;
+  font-size: 0.65rem;
 }
 
 /* Container */
@@ -1011,6 +1060,17 @@ body {
 
   .nav-user {
     display: none;
+  }
+
+  .user-menu-btn {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+  }
+
+  .user-menu-btn .avatar-xs {
+    width: 22px;
+    height: 22px;
+    font-size: 0.6rem;
   }
 
   .container {

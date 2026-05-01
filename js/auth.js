@@ -1,6 +1,5 @@
 const authSection = document.getElementById('authSection');
 const welcomeSection = document.getElementById('welcomeSection');
-const navUser = document.getElementById('navUser');
 const welcomeName = document.getElementById('welcomeName');
 const authError = document.getElementById('authError');
 
@@ -32,19 +31,30 @@ async function getCurrentUser() {
 }
 
 function updateUI(user) {
-  const navSignoutBtn = document.getElementById('navSignoutBtn');
+  const userMenuBtn = document.getElementById('userMenuBtn');
+  const userDropdown = document.getElementById('userDropdown');
   if (user) {
     authSection.classList.add('hidden');
     if (welcomeSection) welcomeSection.classList.remove('hidden');
-    if (navUser) navUser.textContent = user.email;
-    if (navSignoutBtn) navSignoutBtn.classList.remove('hidden');
+    if (userMenuBtn) userMenuBtn.classList.remove('hidden');
     fetchProfileName(user.id);
   } else {
     authSection.classList.remove('hidden');
     if (welcomeSection) welcomeSection.classList.add('hidden');
-    if (navUser) navUser.textContent = '';
-    if (navSignoutBtn) navSignoutBtn.classList.add('hidden');
+    if (userMenuBtn) userMenuBtn.classList.add('hidden');
+    if (userDropdown) userDropdown.classList.add('hidden');
   }
+}
+
+function avatarInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+}
+
+function avatarColor(name) {
+  const colors = ['#2563eb', '#7c3aed', '#db2777', '#ea580c', '#16a34a', '#0891b2', '#ca8a04', '#4f46e5', '#059669', '#6366f1'];
+  let hash = 0;
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  return colors[Math.abs(hash) % colors.length];
 }
 
 async function fetchProfileName(userId) {
@@ -59,12 +69,24 @@ async function fetchProfileName(userId) {
     const defaultName = user.email ? user.email.split('@')[0] : 'Spotter';
     await supabase.from('profiles').insert({ id: userId, display_name: defaultName });
     if (welcomeName) welcomeName.textContent = defaultName;
+    updateUserMenu(defaultName);
     return;
   }
 
-  if (!error && data && welcomeName) {
-    welcomeName.textContent = data.display_name;
+  if (!error && data) {
+    if (welcomeName) welcomeName.textContent = data.display_name;
+    updateUserMenu(data.display_name);
   }
+}
+
+function updateUserMenu(name) {
+  const avatarEl = document.getElementById('userMenuAvatar');
+  const nameEl = document.getElementById('userMenuName');
+  if (avatarEl) {
+    avatarEl.textContent = avatarInitials(name);
+    avatarEl.style.background = avatarColor(name);
+  }
+  if (nameEl) nameEl.textContent = name;
 }
 
 function showError(message) {
@@ -151,6 +173,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (navSignoutBtn) {
     navSignoutBtn.addEventListener('click', () => signOut());
+  }
+
+  const userMenuBtn = document.getElementById('userMenuBtn');
+  const userDropdown = document.getElementById('userDropdown');
+  if (userMenuBtn && userDropdown) {
+    userMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      userDropdown.classList.toggle('hidden');
+    });
+    document.addEventListener('click', () => {
+      userDropdown.classList.add('hidden');
+    });
   }
 
   try {
