@@ -138,8 +138,15 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  if (document.getElementById('leaderboardTable')) {
-    renderLeaderboard();
-  }
+document.addEventListener('DOMContentLoaded', async () => {
+  if (!document.getElementById('leaderboardTable')) return;
+
+  const user = await getCurrentUser();
+  if (user) renderLeaderboard();
+
+  try {
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) renderLeaderboard();
+    });
+  } catch (e) {}
 });

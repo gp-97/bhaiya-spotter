@@ -33,16 +33,22 @@ async function getCurrentUser() {
 function updateUI(user) {
   const userMenuBtn = document.getElementById('userMenuBtn');
   const userDropdown = document.getElementById('userDropdown');
+  const navLinks = document.getElementById('navLinks');
+  const leaderboardSection = document.getElementById('leaderboardSection');
   if (user) {
     if (authSection) authSection.classList.add('hidden');
     if (welcomeSection) welcomeSection.classList.remove('hidden');
     if (userMenuBtn) userMenuBtn.classList.remove('hidden');
+    if (navLinks) navLinks.classList.remove('hidden');
+    if (leaderboardSection) leaderboardSection.classList.remove('hidden');
     fetchProfileName(user.id);
   } else {
     if (authSection) authSection.classList.remove('hidden');
     if (welcomeSection) welcomeSection.classList.add('hidden');
     if (userMenuBtn) userMenuBtn.classList.add('hidden');
     if (userDropdown) userDropdown.classList.add('hidden');
+    if (navLinks) navLinks.classList.add('hidden');
+    if (leaderboardSection) leaderboardSection.classList.add('hidden');
   }
 }
 
