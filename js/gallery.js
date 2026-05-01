@@ -53,18 +53,41 @@ async function fetchGallery(offset, limit) {
   return data;
 }
 
+async function fetchVoteCounts(submissionIds) {
+  if (!submissionIds.length) return {};
+  const { data, error } = await supabase
+    .from('votes')
+    .select('submission_id, value')
+    .in('submission_id', submissionIds);
+  if (error || !data) return {};
+  const counts = {};
+  data.forEach(v => {
+    if (!counts[v.submission_id]) counts[v.submission_id] = { up: 0, down: 0 };
+    counts[v.submission_id][v.value === 1 ? 'up' : 'down']++;
+  });
+  return counts;
+}
+
 function renderPhoto(item, index) {
+  const ups = item.votes_up || 0;
+  const downs = item.votes_down || 0;
+  const score = ups - downs;
+
   const card = document.createElement('div');
   card.className = 'gallery-card';
   card.innerHTML = `
     <div class="gallery-card-image">
       <img src="${escapeHtml(item.image_url)}" alt="Bhaiya sighting" loading="lazy">
+      <div class="gallery-card-votes">
+        <span class="card-vote-icon">&#9650;</span>
+        <span class="card-vote-count">${score}</span>
+        <span class="card-vote-icon">&#9660;</span>
+      </div>
     </div>
     <div class="gallery-card-info">
       <span class="gallery-card-name">${escapeHtml(item.profiles.display_name)}</span>
       <span class="gallery-card-time">${timeAgo(item.uploaded_at)}</span>
     </div>`;
-  card.querySelector('.gallery-card-image').style.cursor = 'pointer';
   card.querySelector('.gallery-card-image').addEventListener('click', () => openLightbox(index));
   return card;
 }
@@ -277,7 +300,12 @@ async function loadMore() {
       galleryLoading.classList.add('hidden');
       if (!photos || photos.length === 0) { galleryEmpty.classList.remove('hidden'); return; }
     }
+
+    const ids = photos.map(p => p.id);
+    const voteCounts = await fetchVoteCounts(ids);
     photos.forEach(item => {
+      item.votes_up = voteCounts[item.id]?.up || 0;
+      item.votes_down = voteCounts[item.id]?.down || 0;
       loadedPhotos.push(item);
       galleryGrid.appendChild(renderPhoto(item, loadedPhotos.length - 1));
     });

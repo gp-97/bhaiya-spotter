@@ -466,6 +466,32 @@ body {
   transition: transform 0.3s ease;
 }
 
+.gallery-card-votes {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 16px 10px 6px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.card-vote-icon {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+}
+
+.card-vote-count {
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 18px;
+  text-align: center;
+}
+
 .gallery-card:hover .gallery-card-image img {
   transform: scale(1.03);
 }
