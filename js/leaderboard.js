@@ -13,12 +13,10 @@ async function fetchLeaderboard() {
     .order('uploaded_at', { ascending: false });
 
   if (error) throw error;
-
-  if (!submissions || submissions.length === 0) {
-    return [];
-  }
+  if (!submissions || submissions.length === 0) return [];
 
   const userStats = {};
+  const submissionIds = [...new Set(submissions.map(s => s.id))];
 
   submissions.forEach(s => {
     const uid = s.user_id;
@@ -27,20 +25,39 @@ async function fetchLeaderboard() {
         user_id: uid,
         display_name: s.profiles.display_name,
         photo_count: 0,
+        upvotes: 0,
         days: new Set(),
       };
     }
     userStats[uid].photo_count++;
-    const dateStr = new Date(s.uploaded_at).toDateString();
-    userStats[uid].days.add(dateStr);
+    userStats[uid].days.add(new Date(s.uploaded_at).toDateString());
   });
+
+  const { data: votes } = await supabase
+    .from('votes')
+    .select('submission_id, user_id')
+    .in('submission_id', submissionIds);
+
+  const submissionOwner = {};
+  submissions.forEach(s => { submissionOwner[s.id] = s.user_id; });
+
+  if (votes) {
+    votes.forEach(v => {
+      const ownerId = submissionOwner[v.submission_id];
+      if (ownerId && ownerId !== v.user_id) {
+        if (!userStats[ownerId]) return;
+        userStats[ownerId].upvotes++;
+      }
+    });
+  }
 
   const rankings = Object.values(userStats).map(u => ({
     user_id: u.user_id,
     display_name: u.display_name,
     photo_count: u.photo_count,
     active_days: u.days.size,
-    score: Math.round((u.photo_count * 0.7 + u.days.size * 0.3 * 10) * 10) / 10,
+    upvotes: u.upvotes,
+    score: Math.round((u.photo_count * 0.4 + u.days.size * 0.2 * 10 + u.upvotes * 0.4) * 10) / 10,
   }));
 
   rankings.sort((a, b) => b.score - a.score);
@@ -99,6 +116,7 @@ async function renderLeaderboard() {
         </td>
         <td>${escapeHtml(r.display_name)}${isCurrentUser ? ' (you)' : ''}</td>
         <td>${r.photo_count}</td>
+        <td>${r.upvotes}</td>
         <td>${r.active_days}</td>
         <td class="score-cell">${r.score}</td>
       `;
