@@ -139,10 +139,23 @@ async function loadMore() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+  const notLoggedIn = document.getElementById('notLoggedIn');
+  const gallerySection = document.getElementById('gallerySection');
   const loadMoreBtn = document.getElementById('loadMoreBtn');
   const lightbox = document.getElementById('lightbox');
   const lightboxClose = document.getElementById('lightboxClose');
+
+  const user = await getCurrentUser();
+
+  if (!user) {
+    notLoggedIn.classList.remove('hidden');
+    return;
+  }
+
+  await ensureProfile(user);
+  notLoggedIn.classList.add('hidden');
+  gallerySection.classList.remove('hidden');
 
   if (loadMoreBtn) {
     loadMoreBtn.addEventListener('click', loadMore);

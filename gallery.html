@@ -24,22 +24,30 @@
   </nav>
 
   <main class="container">
-    <h2>Gallery</h2>
-    <p class="subtitle">All spotted Bhaiya sightings</p>
+    <section id="notLoggedIn" class="card">
+      <h2>Sign In Required</h2>
+      <p>You need to sign in to view the gallery.</p>
+      <a href="index.html" class="btn btn-primary">Go to Sign In</a>
+    </section>
 
-    <div id="galleryLoading" class="loading">Loading photos...</div>
-    <div id="galleryError" class="error-text hidden"></div>
-    <div id="galleryEmpty" class="empty-state hidden">
-      <p>No photos uploaded yet. Be the first to spot Bhaiya!</p>
-      <a href="upload.html" class="btn btn-primary">Upload a Photo</a>
-    </div>
+    <section id="gallerySection" class="hidden">
+      <h2>Gallery</h2>
+      <p class="subtitle">All spotted Bhaiya sightings</p>
 
-    <div id="galleryGrid" class="gallery-grid"></div>
+      <div id="galleryLoading" class="loading">Loading photos...</div>
+      <div id="galleryError" class="error-text hidden"></div>
+      <div id="galleryEmpty" class="empty-state hidden">
+        <p>No photos uploaded yet. Be the first to spot Bhaiya!</p>
+        <a href="upload.html" class="btn btn-primary">Upload a Photo</a>
+      </div>
 
-    <div id="loadMoreContainer" class="load-more-container hidden">
-      <button id="loadMoreBtn" class="btn btn-outline">Load More</button>
-      <span id="loadMoreStatus" class="status-text hidden"></span>
-    </div>
+      <div id="galleryGrid" class="gallery-grid"></div>
+
+      <div id="loadMoreContainer" class="load-more-container hidden">
+        <button id="loadMoreBtn" class="btn btn-outline">Load More</button>
+        <span id="loadMoreStatus" class="status-text hidden"></span>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
