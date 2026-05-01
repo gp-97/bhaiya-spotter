@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery — Bhaiya Spotter</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0"></script>
+  <script defer src="js/supabase-client.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/gallery.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">Bhaiya Spotter</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Leaderboard</a>
+        <a href="gallery.html" class="nav-link active">Gallery</a>
+        <a href="upload.html" class="nav-link">Upload</a>
+        <span class="nav-user" id="navUser"></span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <h2>Gallery</h2>
+    <p class="subtitle">All spotted Bhaiya sightings</p>
+
+    <div id="galleryLoading" class="loading">Loading photos...</div>
+    <div id="galleryError" class="error-text hidden"></div>
+    <div id="galleryEmpty" class="empty-state hidden">
+      <p>No photos uploaded yet. Be the first to spot Bhaiya!</p>
+      <a href="upload.html" class="btn btn-primary">Upload a Photo</a>
+    </div>
+
+    <div id="galleryGrid" class="gallery-grid"></div>
+
+    <div id="loadMoreContainer" class="load-more-container hidden">
+      <button id="loadMoreBtn" class="btn btn-outline">Load More</button>
+      <span id="loadMoreStatus" class="status-text hidden"></span>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>Powered by <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a> &amp; GitHub Pages</p>
+  </footer>
+</body>
+</html>
