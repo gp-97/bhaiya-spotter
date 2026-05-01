@@ -244,9 +244,8 @@ body::before {
 
 /* Auth */
 .auth-card {
-  max-width: min(100%, 36rem);
+  max-width: min(100%, 25rem);
   margin: 0 auto clamp(1rem, 3vw, 1.5rem);
-  padding: clamp(1.5rem, 4vw, 2rem);
 }
 
 .container.centered-auth {
