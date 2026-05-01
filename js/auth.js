@@ -35,12 +35,14 @@ function updateUI(user) {
   const userDropdown = document.getElementById('userDropdown');
   const navLinks = document.getElementById('navLinks');
   const leaderboardSection = document.getElementById('leaderboardSection');
+  const navContainer = document.getElementById('navContainer');
   if (user) {
     if (authSection) authSection.classList.add('hidden');
     if (welcomeSection) welcomeSection.classList.remove('hidden');
     if (userMenuBtn) userMenuBtn.classList.remove('hidden');
     if (navLinks) navLinks.classList.remove('hidden');
     if (leaderboardSection) leaderboardSection.classList.remove('hidden');
+    if (navContainer) navContainer.classList.remove('centered');
     fetchProfileName(user.id);
   } else {
     if (authSection) authSection.classList.remove('hidden');
@@ -49,6 +51,7 @@ function updateUI(user) {
     if (userDropdown) userDropdown.classList.add('hidden');
     if (navLinks) navLinks.classList.add('hidden');
     if (leaderboardSection) leaderboardSection.classList.add('hidden');
+    if (navContainer) navContainer.classList.add('centered');
   }
 }
 

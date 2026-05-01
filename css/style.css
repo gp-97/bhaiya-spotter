@@ -117,6 +117,12 @@ body::before {
   text-decoration: none;
 }
 
+.nav-container.centered .nav-brand-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
 .nav-title {
   font-size: clamp(1rem, 3.5vw, 1.15rem);
   font-weight: 700;
