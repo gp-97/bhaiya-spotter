@@ -54,7 +54,35 @@ function renderPhoto(item) {
     </div>
   `;
 
+  const imageDiv = card.querySelector('.gallery-card-image');
+  imageDiv.style.cursor = 'pointer';
+  imageDiv.addEventListener('click', () => {
+    openLightbox(item.image_url, item.profiles.display_name, item.uploaded_at);
+  });
+
   return card;
+}
+
+function openLightbox(url, name, dateStr) {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+  const lightboxName = document.getElementById('lightboxName');
+  const lightboxTime = document.getElementById('lightboxTime');
+
+  lightboxImage.src = url;
+  lightboxName.textContent = name;
+  lightboxTime.textContent = timeAgo(dateStr);
+  lightbox.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImage = document.getElementById('lightboxImage');
+
+  lightbox.classList.add('hidden');
+  lightboxImage.src = '';
+  document.body.style.overflow = '';
 }
 
 async function loadMore() {
@@ -113,10 +141,28 @@ async function loadMore() {
 
 document.addEventListener('DOMContentLoaded', () => {
   const loadMoreBtn = document.getElementById('loadMoreBtn');
+  const lightbox = document.getElementById('lightbox');
+  const lightboxClose = document.getElementById('lightboxClose');
 
   if (loadMoreBtn) {
     loadMoreBtn.addEventListener('click', loadMore);
   }
+
+  if (lightboxClose) {
+    lightboxClose.addEventListener('click', closeLightbox);
+  }
+
+  if (lightbox) {
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox && !lightbox.classList.contains('hidden')) {
+      closeLightbox();
+    }
+  });
 
   if (document.getElementById('galleryGrid')) {
     loadMore();
