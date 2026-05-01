@@ -250,17 +250,19 @@ body::before {
 
 .auth-card-inner {
   display: flex;
-  align-items: center;
+  align-items: stretch;
   gap: clamp(1rem, 3vw, 1.5rem);
 }
 
 .auth-logo {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 .auth-logo-img {
-  width: clamp(5rem, 18vw, 8rem);
-  height: clamp(5rem, 18vw, 8rem);
+  width: clamp(6rem, 20vw, 9rem);
+  height: 100%;
   border-radius: 16px;
   object-fit: cover;
 }
