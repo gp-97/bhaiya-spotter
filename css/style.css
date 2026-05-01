@@ -588,22 +588,18 @@ body::before {
 /* Gallery */
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: clamp(2px, 0.5vw, 4px);
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1px, 0.3vw, 3px);
 }
 
 .gallery-card {
   background: var(--surface);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: none;
-  border-radius: 0;
   overflow: hidden;
   transition: opacity 0.2s;
 }
 
 .gallery-card:hover {
-  opacity: 0.85;
+  opacity: 0.88;
   transform: none;
 }
 
@@ -627,7 +623,21 @@ body::before {
 }
 
 .gallery-card-info {
-  display: none;
+  padding: clamp(0.25rem, 1vw, 0.4rem) clamp(0.3rem, 1.5vw, 0.5rem);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.gallery-card-name {
+  font-weight: 600;
+  font-size: clamp(0.6rem, 1.6vw, 0.7rem);
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
 }
 
 .gallery-card-votes {
@@ -635,11 +645,10 @@ body::before {
 }
 
 .gallery-card-time {
-  display: none;
-}
-
-.gallery-card-name {
-  display: none;
+  font-size: clamp(0.55rem, 1.4vw, 0.65rem);
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .gallery-card:hover {
@@ -1485,14 +1494,8 @@ body::before {
   }
 
   .gallery-grid {
-    gap: 2px;
-  }
-}
-
-@media (max-width: 30rem) {
-  .gallery-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 2px;
+    gap: 1px;
   }
 
   .recent-grid {
