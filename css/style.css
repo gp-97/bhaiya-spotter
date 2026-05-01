@@ -919,7 +919,6 @@ body::before {
 .comments-list {
   flex: 1;
   overflow-y: auto;
-  max-height: clamp(8rem, 25vh, 16rem);
   padding-right: 0.25rem;
 }
 
@@ -977,6 +976,7 @@ body::before {
   display: flex;
   gap: clamp(0.3rem, 1vw, 0.5rem);
   align-items: flex-end;
+  flex-shrink: 0;
 }
 
 .comment-input {
