@@ -100,16 +100,23 @@ function openLightbox(index) {
 
   lightbox.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+
+  loadComments(item.id);
 }
 
 function closeLightbox() {
   const lightbox = document.getElementById('lightbox');
   const lightboxImage = document.getElementById('lightboxImage');
+  const commentsList = document.getElementById('commentsList');
+  const commentInput = document.getElementById('commentInput');
 
   lightbox.classList.add('hidden');
   lightboxImage.src = '';
   lightboxIndex = -1;
   document.body.style.overflow = '';
+
+  if (commentsList) commentsList.innerHTML = '';
+  if (commentInput) commentInput.value = '';
 }
 
 function navigateLightbox(direction) {
@@ -117,6 +124,64 @@ function navigateLightbox(direction) {
   if (newIndex >= 0 && newIndex < loadedPhotos.length) {
     openLightbox(newIndex);
   }
+}
+
+async function loadComments(submissionId) {
+  const commentsList = document.getElementById('commentsList');
+  const commentsLoading = document.getElementById('commentsLoading');
+
+  commentsList.innerHTML = '';
+  commentsLoading.classList.remove('hidden');
+
+  const { data, error } = await supabase
+    .from('comments')
+    .select(`
+      id,
+      content,
+      created_at,
+      profiles(display_name)
+    `)
+    .eq('submission_id', submissionId)
+    .order('created_at', { ascending: true });
+
+  commentsLoading.classList.add('hidden');
+
+  if (error || !data) return;
+
+  if (data.length === 0) {
+    commentsList.innerHTML = '<p class="comments-empty">No comments yet. Be the first!</p>';
+    return;
+  }
+
+  data.forEach(c => {
+    const div = document.createElement('div');
+    div.className = 'comment-item';
+    div.innerHTML = `
+      <div class="comment-header">
+        <span class="comment-name">${escapeHtml(c.profiles.display_name)}</span>
+        <span class="comment-time">${timeAgo(c.created_at)}</span>
+      </div>
+      <p class="comment-content">${escapeHtml(c.content)}</p>
+    `;
+    commentsList.appendChild(div);
+  });
+
+  commentsList.scrollTop = commentsList.scrollHeight;
+}
+
+async function submitComment(submissionId, content) {
+  const user = await getCurrentUser();
+  if (!user) return;
+
+  const { error } = await supabase
+    .from('comments')
+    .insert({
+      submission_id: submissionId,
+      user_id: user.id,
+      content: content
+    });
+
+  if (error) throw error;
 }
 
 async function loadMore() {
@@ -222,6 +287,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (e.key === 'ArrowLeft') navigateLightbox(-1);
     if (e.key === 'ArrowRight') navigateLightbox(1);
   });
+
+  const commentForm = document.getElementById('commentForm');
+  if (commentForm) {
+    commentForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const commentInput = document.getElementById('commentInput');
+      const content = commentInput.value.trim();
+      if (!content) return;
+
+      const item = loadedPhotos[lightboxIndex];
+      if (!item) return;
+
+      const submitBtn = commentForm.querySelector('button');
+      submitBtn.disabled = true;
+
+      try {
+        await submitComment(item.id, content);
+        commentInput.value = '';
+        await loadComments(item.id);
+      } catch (err) {
+        console.error('Failed to post comment:', err);
+      } finally {
+        submitBtn.disabled = false;
+        commentInput.focus();
+      }
+    });
+  }
 
   if (document.getElementById('galleryGrid')) {
     loadMore();

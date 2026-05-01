@@ -66,7 +66,33 @@ CREATE POLICY "Users can delete their own submissions"
   ON submissions FOR DELETE USING (auth.uid() = user_id);
 
 
--- 3. STORAGE BUCKET RLS POLICIES
+-- 3. COMMENTS TABLE (for gallery lightbox)
+CREATE TABLE IF NOT EXISTS comments (
+  id            BIGSERIAL PRIMARY KEY,
+  submission_id BIGINT NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
+  user_id       UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  content       TEXT NOT NULL,
+  created_at    TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_comments_submission_id ON comments(submission_id);
+
+ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Comments are viewable by everyone" ON comments;
+CREATE POLICY "Comments are viewable by everyone"
+  ON comments FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can insert their own comments" ON comments;
+CREATE POLICY "Users can insert their own comments"
+  ON comments FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete their own comments" ON comments;
+CREATE POLICY "Users can delete their own comments"
+  ON comments FOR DELETE USING (auth.uid() = user_id);
+
+
+-- 4. STORAGE BUCKET RLS POLICIES
 -- Run these in SQL Editor AFTER creating the 'submissions' bucket via the dashboard
 
 -- Allow anyone to read files from the submissions bucket
