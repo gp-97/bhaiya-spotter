@@ -78,14 +78,14 @@ function renderPhoto(item, index) {
   card.innerHTML = `
     <div class="gallery-card-image">
       <img src="${escapeHtml(item.image_url)}" alt="Bhaiya sighting" loading="lazy">
+    </div>
+    <div class="gallery-card-info">
+      <span class="gallery-card-name">${escapeHtml(item.profiles.display_name)}</span>
       <div class="gallery-card-votes">
         <span class="card-vote-icon">&#9650;</span>
         <span class="card-vote-count">${score}</span>
         <span class="card-vote-icon">&#9660;</span>
       </div>
-    </div>
-    <div class="gallery-card-info">
-      <span class="gallery-card-name">${escapeHtml(item.profiles.display_name)}</span>
       <span class="gallery-card-time">${timeAgo(item.uploaded_at)}</span>
     </div>`;
   card.querySelector('.gallery-card-image').addEventListener('click', () => openLightbox(index));

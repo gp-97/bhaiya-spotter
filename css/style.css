@@ -466,32 +466,6 @@ body {
   transition: transform 0.3s ease;
 }
 
-.gallery-card-votes {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 16px 10px 6px;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.55));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-}
-
-.card-vote-icon {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.7rem;
-}
-
-.card-vote-count {
-  color: #fff;
-  font-size: 0.8rem;
-  font-weight: 600;
-  min-width: 18px;
-  text-align: center;
-}
-
 .gallery-card:hover .gallery-card-image img {
   transform: scale(1.03);
 }
@@ -499,7 +473,6 @@ body {
 .gallery-card-info {
   padding: 10px 14px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 8px;
 }
@@ -508,16 +481,38 @@ body {
   font-weight: 600;
   font-size: 0.9rem;
   color: var(--text);
-  flex: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+.gallery-card-votes {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.card-vote-icon {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+}
+
+.card-vote-count {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  min-width: 16px;
+  text-align: center;
 }
 
 .gallery-card-time {
   font-size: 0.8rem;
   color: var(--text-muted);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .load-more-container {
