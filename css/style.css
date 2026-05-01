@@ -698,6 +698,19 @@ body {
   font-weight: 500;
 }
 
+.lightbox-counter-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
 /* Comments in lightbox sidebar */
 .lightbox-comments {
   border-top: 1px solid var(--border);
