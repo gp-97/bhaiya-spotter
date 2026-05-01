@@ -126,6 +126,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     return;
   }
 
+  await ensureProfile(user);
+
   notLoggedIn.classList.add('hidden');
   uploadSection.classList.remove('hidden');
   loadRecentUploads();

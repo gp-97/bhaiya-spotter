@@ -49,6 +49,15 @@ async function fetchProfileName(userId) {
     .select('display_name')
     .eq('id', userId)
     .single();
+
+  if (error && error.code === 'PGRST116') {
+    const user = await getCurrentUser();
+    const defaultName = user.email ? user.email.split('@')[0] : 'Spotter';
+    await supabase.from('profiles').insert({ id: userId, display_name: defaultName });
+    if (welcomeName) welcomeName.textContent = defaultName;
+    return;
+  }
+
   if (!error && data && welcomeName) {
     welcomeName.textContent = data.display_name;
   }
@@ -58,6 +67,20 @@ function showError(message) {
   if (authError) {
     authError.textContent = message;
     authError.classList.remove('hidden');
+  }
+}
+
+async function ensureProfile(user) {
+  if (!user) return;
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id')
+    .eq('id', user.id)
+    .single();
+
+  if (error && error.code === 'PGRST116') {
+    const defaultName = user.email ? user.email.split('@')[0] : 'Spotter';
+    await supabase.from('profiles').insert({ id: user.id, display_name: defaultName });
   }
 }
 
