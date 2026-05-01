@@ -82,9 +82,8 @@ function renderPhoto(item, index) {
     <div class="gallery-card-info">
       <span class="gallery-card-name">${escapeHtml(item.profiles.display_name)}</span>
       <div class="gallery-card-votes">
-        <span class="card-vote-icon">&#9650;</span>
+        <span class="card-vote-icon">&#10084;&#65039;</span>
         <span class="card-vote-count">${score}</span>
-        <span class="card-vote-icon">&#9660;</span>
       </div>
       <span class="gallery-card-time">${timeAgo(item.uploaded_at)}</span>
     </div>`;
@@ -268,27 +267,25 @@ async function submitComment(submissionId, content, parentId) {
 
 async function loadVotes(submissionId) {
   const voteUpBtn = document.getElementById('voteUpBtn');
-  const voteDownBtn = document.getElementById('voteDownBtn');
   const voteCount = document.getElementById('voteCount');
 
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from('votes')
     .select('value, user_id')
     .eq('submission_id', submissionId);
 
-  let score = 0;
-  let userVote = 0;
+  let likes = 0;
+  let userLiked = false;
 
   if (data) {
     data.forEach(v => {
-      score += v.value;
-      if (v.user_id === currentUserId) userVote = v.value;
+      likes += v.value;
+      if (v.user_id === currentUserId) userLiked = true;
     });
   }
 
-  voteCount.textContent = score;
-  voteUpBtn.classList.toggle('voted', userVote === 1);
-  voteDownBtn.classList.toggle('voted', userVote === -1);
+  voteCount.textContent = likes;
+  voteUpBtn.classList.toggle('voted', userLiked);
 }
 
 async function handleVote(submissionId, value) {
@@ -296,17 +293,13 @@ async function handleVote(submissionId, value) {
 
   const { data: existing } = await supabase
     .from('votes')
-    .select('id, value')
+    .select('id')
     .eq('submission_id', submissionId)
     .eq('user_id', currentUserId)
     .single();
 
   if (existing) {
-    if (existing.value === value) {
-      await supabase.from('votes').delete().eq('id', existing.id);
-    } else {
-      await supabase.from('votes').update({ value }).eq('id', existing.id);
-    }
+    await supabase.from('votes').delete().eq('id', existing.id);
   } else {
     await supabase.from('votes').insert({ submission_id: submissionId, user_id: currentUserId, value });
   }
@@ -466,11 +459,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('voteUpBtn')?.addEventListener('click', () => {
     const item = loadedPhotos[lightboxIndex];
     if (item) handleVote(item.id, 1);
-  });
-
-  document.getElementById('voteDownBtn')?.addEventListener('click', () => {
-    const item = loadedPhotos[lightboxIndex];
-    if (item) handleVote(item.id, -1);
   });
 
   if (document.getElementById('galleryGrid')) loadMore();
