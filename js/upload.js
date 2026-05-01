@@ -100,6 +100,7 @@ function timeAgo(dateStr) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+  const authChecking = document.getElementById('authChecking');
   const notLoggedIn = document.getElementById('notLoggedIn');
   const uploadSection = document.getElementById('uploadSection');
   const dropZone = document.getElementById('dropZone');
@@ -121,6 +122,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const user = await getCurrentUser();
 
+  if (authChecking) authChecking.classList.add('hidden');
+
   if (!user) {
     notLoggedIn.classList.remove('hidden');
     return;
@@ -128,7 +131,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await ensureProfile(user);
 
-  notLoggedIn.classList.add('hidden');
   uploadSection.classList.remove('hidden');
   loadRecentUploads();
 

@@ -414,9 +414,13 @@ async function loadMore() {
 document.addEventListener('DOMContentLoaded', async () => {
   const notLoggedIn = document.getElementById('notLoggedIn');
   const gallerySection = document.getElementById('gallerySection');
+  const authChecking = document.getElementById('authChecking');
   const lightbox = document.getElementById('lightbox');
 
   const user = await getCurrentUser();
+
+  if (authChecking) authChecking.classList.add('hidden');
+
   if (!user) { notLoggedIn.classList.remove('hidden'); return; }
 
   currentUserId = user.id;
