@@ -147,18 +147,39 @@ async function loadComments(submissionId) {
     return;
   }
 
+  const commentIds = data.map(c => c.id);
+  const voteMap = await fetchCommentVotes(commentIds);
+
   const parents = data.filter(c => !c.parent_id);
 
   parents.forEach(parent => {
     const replies = data.filter(c => c.parent_id === parent.id);
-    commentsList.appendChild(renderCommentItem(parent, false));
-    replies.forEach(reply => commentsList.appendChild(renderCommentItem(reply, true)));
+    commentsList.appendChild(renderCommentItem(parent, false, voteMap[parent.id]));
+    replies.forEach(reply => commentsList.appendChild(renderCommentItem(reply, true, voteMap[reply.id])));
   });
 
   commentsList.scrollTop = commentsList.scrollHeight;
 }
 
-function renderCommentItem(c, isReply) {
+async function fetchCommentVotes(commentIds) {
+  if (!commentIds.length) return {};
+  const { data, error } = await supabase
+    .from('comment_votes')
+    .select('comment_id, value, user_id')
+    .in('comment_id', commentIds);
+  if (error || !data) return {};
+  const map = {};
+  data.forEach(v => {
+    if (!map[v.comment_id]) map[v.comment_id] = { ups: 0, downs: 0, userVote: 0 };
+    map[v.comment_id][v.value === 1 ? 'ups' : 'downs']++;
+    if (v.user_id === currentUserId) map[v.comment_id].userVote = v.value;
+  });
+  return map;
+}
+
+function renderCommentItem(c, isReply, voteData) {
+  const vd = voteData || { ups: 0, downs: 0, userVote: 0 };
+  const score = vd.ups - vd.downs;
   const div = document.createElement('div');
   div.className = 'comment-item' + (isReply ? ' comment-reply' : '');
   div.dataset.commentId = c.id;
@@ -170,7 +191,16 @@ function renderCommentItem(c, isReply) {
         <span class="comment-time">${timeAgo(c.created_at)}</span>
       </div>
       <p class="comment-content">${escapeHtml(c.content)}</p>
-      ${!isReply ? '<button class="reply-btn">Reply</button>' : ''}
+      <div class="comment-actions">
+        <button class="comment-vote-btn ${vd.userVote === 1 ? 'active' : ''}" data-vote="1">
+          &#9650;
+        </button>
+        <span class="comment-vote-score">${score !== 0 ? score : ''}</span>
+        <button class="comment-vote-btn ${vd.userVote === -1 ? 'active' : ''}" data-vote="-1">
+          &#9660;
+        </button>
+        ${!isReply ? '<button class="reply-btn">Reply</button>' : ''}
+      </div>
       <div class="reply-box hidden">
         <textarea class="reply-input" rows="2" placeholder="Write a reply..."></textarea>
         <div class="reply-actions">
@@ -179,6 +209,13 @@ function renderCommentItem(c, isReply) {
         </div>
       </div>
     </div>`;
+
+  const voteBtns = div.querySelectorAll('.comment-vote-btn');
+  voteBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      handleCommentVote(c.id, parseInt(btn.dataset.vote));
+    });
+  });
 
   if (!isReply) {
     const replyBtn = div.querySelector('.reply-btn');
@@ -301,6 +338,30 @@ async function updateCardVoteCount(submissionId) {
     const voteCount = card.querySelector('.card-vote-count');
     if (voteCount) voteCount.textContent = score;
   }
+}
+
+async function handleCommentVote(commentId, value) {
+  if (!currentUserId) return;
+
+  const { data: existing } = await supabase
+    .from('comment_votes')
+    .select('id, value')
+    .eq('comment_id', commentId)
+    .eq('user_id', currentUserId)
+    .single();
+
+  if (existing) {
+    if (existing.value === value) {
+      await supabase.from('comment_votes').delete().eq('id', existing.id);
+    } else {
+      await supabase.from('comment_votes').update({ value }).eq('id', existing.id);
+    }
+  } else {
+    await supabase.from('comment_votes').insert({ comment_id: commentId, user_id: currentUserId, value });
+  }
+
+  const item = loadedPhotos[lightboxIndex];
+  if (item) loadComments(item.id);
 }
 
 async function loadMore() {

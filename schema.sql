@@ -127,7 +127,38 @@ CREATE POLICY "Users can delete their own votes"
   ON votes FOR DELETE USING (auth.uid() = user_id);
 
 
--- 5. STORAGE BUCKET RLS POLICIES
+-- 5. COMMENT VOTES TABLE (upvote/downvote on comments)
+CREATE TABLE IF NOT EXISTS comment_votes (
+  id         BIGSERIAL PRIMARY KEY,
+  comment_id BIGINT NOT NULL REFERENCES comments(id) ON DELETE CASCADE,
+  user_id    UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  value      SMALLINT NOT NULL CHECK (value IN (-1, 1)),
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (comment_id, user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_comment_votes_comment_id ON comment_votes(comment_id);
+
+ALTER TABLE comment_votes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Comment votes are viewable by everyone" ON comment_votes;
+CREATE POLICY "Comment votes are viewable by everyone"
+  ON comment_votes FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can insert their own comment votes" ON comment_votes;
+CREATE POLICY "Users can insert their own comment votes"
+  ON comment_votes FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update their own comment votes" ON comment_votes;
+CREATE POLICY "Users can update their own comment votes"
+  ON comment_votes FOR UPDATE USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete their own comment votes" ON comment_votes;
+CREATE POLICY "Users can delete their own comment votes"
+  ON comment_votes FOR DELETE USING (auth.uid() = user_id);
+
+
+-- 6. STORAGE BUCKET RLS POLICIES
 -- Run these in SQL Editor AFTER creating the 'submissions' bucket via the dashboard
 
 -- Allow anyone to read files from the submissions bucket

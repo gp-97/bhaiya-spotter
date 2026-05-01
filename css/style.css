@@ -880,11 +880,48 @@ body {
   font-weight: 500;
   cursor: pointer;
   padding: 2px 0;
-  margin-top: 4px;
+  margin-left: 8px;
 }
 
 .reply-btn:hover {
   color: var(--primary);
+}
+
+/* Comment vote controls */
+.comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.comment-vote-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+}
+
+.comment-vote-btn:hover {
+  background: #f1f5f9;
+}
+
+.comment-vote-btn.active {
+  color: var(--primary);
+}
+
+.comment-vote-score {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  min-width: 16px;
+  text-align: center;
 }
 
 /* Reply input */
