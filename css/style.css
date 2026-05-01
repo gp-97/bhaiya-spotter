@@ -251,7 +251,7 @@ body::before {
 .auth-card-inner {
   display: flex;
   align-items: stretch;
-  gap: clamp(1rem, 3vw, 1.5rem);
+  gap: clamp(0.75rem, 2vw, 1rem);
 }
 
 .auth-logo {
@@ -261,7 +261,7 @@ body::before {
 }
 
 .auth-logo-img {
-  width: clamp(6rem, 20vw, 9rem);
+  width: clamp(7rem, 24vw, 11rem);
   height: 100%;
   border-radius: 16px;
   object-fit: cover;
