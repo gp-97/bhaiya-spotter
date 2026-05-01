@@ -4,7 +4,7 @@ const welcomeName = document.getElementById('welcomeName');
 const authError = document.getElementById('authError');
 
 async function signUp(email, password, displayName) {
-  authError.classList.add('hidden');
+  if (authError) authError.classList.add('hidden');
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -15,7 +15,7 @@ async function signUp(email, password, displayName) {
 }
 
 async function signIn(email, password) {
-  authError.classList.add('hidden');
+  if (authError) authError.classList.add('hidden');
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return data;
@@ -34,12 +34,12 @@ function updateUI(user) {
   const userMenuBtn = document.getElementById('userMenuBtn');
   const userDropdown = document.getElementById('userDropdown');
   if (user) {
-    authSection.classList.add('hidden');
+    if (authSection) authSection.classList.add('hidden');
     if (welcomeSection) welcomeSection.classList.remove('hidden');
     if (userMenuBtn) userMenuBtn.classList.remove('hidden');
     fetchProfileName(user.id);
   } else {
-    authSection.classList.remove('hidden');
+    if (authSection) authSection.classList.remove('hidden');
     if (welcomeSection) welcomeSection.classList.add('hidden');
     if (userMenuBtn) userMenuBtn.classList.add('hidden');
     if (userDropdown) userDropdown.classList.add('hidden');

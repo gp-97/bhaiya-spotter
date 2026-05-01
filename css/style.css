@@ -1121,35 +1121,12 @@ body {
     text-align: center;
   }
 
-  .leaderboard-table thead {
-    display: none;
-  }
-
-  .leaderboard-table tbody tr {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid var(--border);
-    align-items: center;
-    gap: 0.25rem;
-  }
-
-  .leaderboard-table td {
-    padding: 0.25rem 0.4rem;
-    border-bottom: none;
-  }
-
   .user-menu-btn {
     order: 10;
   }
 }
 
 @media (max-width: 30rem) {
-  .leaderboard-table tbody tr {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .gallery-card-image {
     aspect-ratio: 16 / 10;
   }
