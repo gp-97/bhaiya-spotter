@@ -32,15 +32,18 @@ async function getCurrentUser() {
 }
 
 function updateUI(user) {
+  const navSignoutBtn = document.getElementById('navSignoutBtn');
   if (user) {
     authSection.classList.add('hidden');
     if (welcomeSection) welcomeSection.classList.remove('hidden');
     if (navUser) navUser.textContent = user.email;
+    if (navSignoutBtn) navSignoutBtn.classList.remove('hidden');
     fetchProfileName(user.id);
   } else {
     authSection.classList.remove('hidden');
     if (welcomeSection) welcomeSection.classList.add('hidden');
     if (navUser) navUser.textContent = '';
+    if (navSignoutBtn) navSignoutBtn.classList.add('hidden');
   }
 }
 
@@ -97,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const loginForm = document.getElementById('loginForm');
   const signupForm = document.getElementById('signupForm');
-  const signoutBtn = document.getElementById('signoutBtn');
+  const navSignoutBtn = document.getElementById('navSignoutBtn');
   const authTabs = document.querySelectorAll('.auth-tab');
 
   if (authTabs.length) {
@@ -146,8 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  if (signoutBtn) {
-    signoutBtn.addEventListener('click', () => signOut());
+  if (navSignoutBtn) {
+    navSignoutBtn.addEventListener('click', () => signOut());
   }
 
   try {
