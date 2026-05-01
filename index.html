@@ -13,7 +13,7 @@
 </head>
 <body>
   <nav class="navbar">
-    <div class="nav-container centered" id="navContainer">
+    <div class="nav-container">
       <div class="nav-brand-center">
         <img src="assets/logo.jpeg" alt="Bhaiya Radar" class="nav-logo">
         <span class="nav-title">Bhaiya Radar</span>
@@ -37,34 +37,26 @@
   <main class="container">
     <!-- Auth section -->
     <section id="authSection" class="card auth-card">
-      <div class="auth-card-inner">
-        <div class="auth-logo">
-          <img src="assets/logo.jpeg" alt="Bhaiya Radar" class="auth-logo-img">
-        </div>
-        <div class="auth-separator"></div>
-        <div class="auth-content">
-          <h2>Join the Spotting</h2>
-          <div class="auth-tabs">
-            <button class="auth-tab active" data-tab="login">Sign In</button>
-            <button class="auth-tab" data-tab="signup">Sign Up</button>
-          </div>
-
-          <form id="loginForm" class="auth-form">
-            <input type="email" id="loginEmail" placeholder="Email" required>
-            <input type="password" id="loginPassword" placeholder="Password" required>
-            <button type="submit" class="btn btn-primary">Sign In</button>
-          </form>
-
-          <form id="signupForm" class="auth-form hidden">
-            <input type="text" id="signupName" placeholder="Display Name" required minlength="2">
-            <input type="email" id="signupEmail" placeholder="Email" required>
-            <input type="password" id="signupPassword" placeholder="Password" required minlength="6">
-            <button type="submit" class="btn btn-primary">Sign Up</button>
-          </form>
-
-          <p id="authError" class="error-text hidden"></p>
-        </div>
+      <h2>Join the Spotting</h2>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Sign In</button>
+        <button class="auth-tab" data-tab="signup">Sign Up</button>
       </div>
+
+      <form id="loginForm" class="auth-form">
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+      </form>
+
+      <form id="signupForm" class="auth-form hidden">
+        <input type="text" id="signupName" placeholder="Display Name" required minlength="2">
+        <input type="email" id="signupEmail" placeholder="Email" required>
+        <input type="password" id="signupPassword" placeholder="Password" required minlength="6">
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+      </form>
+
+      <p id="authError" class="error-text hidden"></p>
     </section>
 
     <!-- Welcome (logged in) section -->
