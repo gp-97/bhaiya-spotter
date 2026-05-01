@@ -71,11 +71,13 @@ CREATE TABLE IF NOT EXISTS comments (
   id            BIGSERIAL PRIMARY KEY,
   submission_id BIGINT NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
   user_id       UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  parent_id     BIGINT REFERENCES comments(id) ON DELETE CASCADE,
   content       TEXT NOT NULL,
   created_at    TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE INDEX IF NOT EXISTS idx_comments_submission_id ON comments(submission_id);
+CREATE INDEX IF NOT EXISTS idx_comments_parent_id ON comments(parent_id);
 
 ALTER TABLE comments ENABLE ROW LEVEL SECURITY;
 
@@ -92,7 +94,38 @@ CREATE POLICY "Users can delete their own comments"
   ON comments FOR DELETE USING (auth.uid() = user_id);
 
 
--- 4. STORAGE BUCKET RLS POLICIES
+-- 4. VOTES TABLE (upvote/downvote on submissions)
+CREATE TABLE IF NOT EXISTS votes (
+  id            BIGSERIAL PRIMARY KEY,
+  submission_id BIGINT NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
+  user_id       UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+  value         SMALLINT NOT NULL CHECK (value IN (-1, 1)),
+  created_at    TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (submission_id, user_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_votes_submission_id ON votes(submission_id);
+
+ALTER TABLE votes ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Votes are viewable by everyone" ON votes;
+CREATE POLICY "Votes are viewable by everyone"
+  ON votes FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Users can insert or update their own votes" ON votes;
+CREATE POLICY "Users can insert or update their own votes"
+  ON votes FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can update their own votes" ON votes;
+CREATE POLICY "Users can update their own votes"
+  ON votes FOR UPDATE USING (auth.uid() = user_id);
+
+DROP POLICY IF EXISTS "Users can delete their own votes" ON votes;
+CREATE POLICY "Users can delete their own votes"
+  ON votes FOR DELETE USING (auth.uid() = user_id);
+
+
+-- 5. STORAGE BUCKET RLS POLICIES
 -- Run these in SQL Editor AFTER creating the 'submissions' bucket via the dashboard
 
 -- Allow anyone to read files from the submissions bucket
