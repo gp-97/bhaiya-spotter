@@ -244,8 +244,41 @@ body::before {
 
 /* Auth */
 .auth-card {
-  max-width: min(100%, 25rem);
+  max-width: min(100%, 36rem);
   margin: 0 auto clamp(1rem, 3vw, 1.5rem);
+}
+
+.auth-card-inner {
+  display: flex;
+  align-items: center;
+  gap: clamp(1rem, 3vw, 1.5rem);
+}
+
+.auth-logo {
+  flex-shrink: 0;
+}
+
+.auth-logo-img {
+  width: clamp(5rem, 18vw, 8rem);
+  height: clamp(5rem, 18vw, 8rem);
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+.auth-separator {
+  width: 1px;
+  align-self: stretch;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+.auth-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.auth-content h2 {
+  text-align: center;
 }
 
 .container.centered-auth {
