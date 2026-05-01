@@ -6,11 +6,12 @@ const authError = document.getElementById('authError');
 
 async function signUp(email, password, displayName) {
   authError.classList.add('hidden');
-  const { data, error } = await supabase.auth.signUp({ email, password });
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { data: { display_name: displayName } }
+  });
   if (error) throw error;
-  if (data.user) {
-    await supabase.from('profiles').insert({ id: data.user.id, display_name: displayName });
-  }
   return data;
 }
 
