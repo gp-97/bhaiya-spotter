@@ -76,6 +76,8 @@ CREATE TABLE IF NOT EXISTS comments (
   created_at    TIMESTAMPTZ DEFAULT now()
 );
 
+ALTER TABLE comments ADD COLUMN IF NOT EXISTS parent_id BIGINT REFERENCES comments(id) ON DELETE CASCADE;
+
 CREATE INDEX IF NOT EXISTS idx_comments_submission_id ON comments(submission_id);
 CREATE INDEX IF NOT EXISTS idx_comments_parent_id ON comments(parent_id);
 
