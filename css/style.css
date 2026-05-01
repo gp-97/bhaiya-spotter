@@ -107,9 +107,16 @@ body::before {
 }
 
 .nav-brand-left {
+  display: none;
+}
+
+.nav-brand-center {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   text-decoration: none;
 }
 
@@ -118,9 +125,6 @@ body::before {
   font-weight: 700;
   color: var(--text);
   letter-spacing: -0.01em;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   white-space: nowrap;
 }
 
