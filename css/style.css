@@ -114,9 +114,6 @@ body::before {
   display: flex;
   align-items: center;
   gap: clamp(0.5rem, 1.5vw, 0.75rem);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   text-decoration: none;
 }
 
