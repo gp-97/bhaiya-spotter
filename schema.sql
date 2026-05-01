@@ -48,8 +48,8 @@ CREATE TABLE IF NOT EXISTS submissions (
   uploaded_at TIMESTAMPTZ DEFAULT now()
 );
 
-CREATE INDEX idx_submissions_user_id ON submissions(user_id);
-CREATE INDEX idx_submissions_uploaded_at ON submissions(uploaded_at);
+CREATE INDEX IF NOT EXISTS idx_submissions_user_id ON submissions(user_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_uploaded_at ON submissions(uploaded_at);
 
 ALTER TABLE submissions ENABLE ROW LEVEL SECURITY;
 
