@@ -79,9 +79,6 @@ function openLightbox(index) {
   document.getElementById('lightboxTime').textContent = fullDate(item.uploaded_at);
   document.getElementById('lightboxCounter').textContent = `${index + 1} of ${loadedPhotos.length}`;
 
-  document.getElementById('lightboxPrev').style.visibility = index > 0 ? 'visible' : 'hidden';
-  document.getElementById('lightboxNext').style.visibility = index < loadedPhotos.length - 1 ? 'visible' : 'hidden';
-
   document.getElementById('lightbox').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 
@@ -101,8 +98,10 @@ function closeLightbox() {
 }
 
 function navigateLightbox(direction) {
-  const newIndex = lightboxIndex + direction;
-  if (newIndex >= 0 && newIndex < loadedPhotos.length) openLightbox(newIndex);
+  let newIndex = lightboxIndex + direction;
+  if (newIndex < 0) newIndex = loadedPhotos.length - 1;
+  if (newIndex >= loadedPhotos.length) newIndex = 0;
+  openLightbox(newIndex);
 }
 
 async function loadComments(submissionId) {
