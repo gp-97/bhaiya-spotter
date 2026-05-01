@@ -96,6 +96,10 @@ DROP POLICY IF EXISTS "Users can delete their own comments" ON comments;
 CREATE POLICY "Users can delete their own comments"
   ON comments FOR DELETE USING (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can update their own comments" ON comments;
+CREATE POLICY "Users can update their own comments"
+  ON comments FOR UPDATE USING (auth.uid() = user_id);
+
 
 -- 4. VOTES TABLE (upvote/downvote on submissions)
 CREATE TABLE IF NOT EXISTS votes (
