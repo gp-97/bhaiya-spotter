@@ -932,6 +932,7 @@ body::before {
   gap: clamp(0.5rem, 1.5vw, 0.75rem);
   padding-bottom: clamp(0.5rem, 1.5vw, 1rem);
   border-bottom: 1px solid var(--border);
+  position: relative;
 }
 
 .lightbox-avatar {
@@ -1247,20 +1248,43 @@ body::before {
 }
 
 .delete-submission-btn {
-  background: none;
-  border: 1px solid var(--error);
-  color: var(--error);
-  padding: 0.3rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s;
+  display: none;
 }
 
-.delete-submission-btn:hover {
-  background: var(--error);
-  color: #fff;
+.photo-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: var(--text-muted);
+  padding: 0 0.25rem;
+  line-height: 1;
+  border-radius: 4px;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.photo-menu-btn:hover {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.photo-dropdown {
+  position: absolute;
+  top: 2.5rem;
+  right: 0;
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  min-width: 140px;
+  z-index: 200;
+  overflow: hidden;
+}
+
+.photo-dropdown .dropdown-item:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: var(--error);
 }
 
 /* Reply input */

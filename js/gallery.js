@@ -104,12 +104,14 @@ function openLightbox(index) {
   document.getElementById('lightbox').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 
-  const deleteBtn = document.getElementById('deleteSubmissionBtn');
-  if (deleteBtn) {
+  const photoMenuBtn = document.getElementById('photoMenuBtn');
+  const photoDropdown = document.getElementById('photoDropdown');
+  if (photoMenuBtn) {
     if (item.user_id === currentUserId) {
-      deleteBtn.classList.remove('hidden');
+      photoMenuBtn.classList.remove('hidden');
     } else {
-      deleteBtn.classList.add('hidden');
+      photoMenuBtn.classList.add('hidden');
+      if (photoDropdown) photoDropdown.classList.add('hidden');
     }
   }
 
@@ -500,6 +502,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     const item = loadedPhotos[lightboxIndex];
     if (item) deleteSubmission(item.id);
   });
+
+  const photoMenuBtn = document.getElementById('photoMenuBtn');
+  const photoDropdown = document.getElementById('photoDropdown');
+  if (photoMenuBtn && photoDropdown) {
+    photoMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      photoDropdown.classList.toggle('hidden');
+    });
+    document.addEventListener('click', () => {
+      photoDropdown.classList.add('hidden');
+    });
+  }
 
   if (document.getElementById('galleryGrid')) loadMore();
 });
