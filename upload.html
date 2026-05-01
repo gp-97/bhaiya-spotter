@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload — Bhaiya Spotter</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/supabase-client.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/upload.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">Bhaiya Spotter</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Leaderboard</a>
+        <a href="upload.html" class="nav-link active">Upload</a>
+        <span class="nav-user" id="navUser"></span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section id="notLoggedIn" class="card">
+      <h2>Sign In Required</h2>
+      <p>You need to sign in before uploading photos.</p>
+      <a href="index.html" class="btn btn-primary">Go to Sign In</a>
+    </section>
+
+    <section id="uploadSection" class="hidden">
+      <h2>Spot Bhaiya? Upload It!</h2>
+      <p class="subtitle">Share your sighting. Upload a clear photo of Bhaiya.</p>
+
+      <div class="upload-card card">
+        <div id="dropZone" class="drop-zone">
+          <div class="drop-zone-content">
+            <span class="drop-icon">&#128247;</span>
+            <p>Drag &amp; drop a photo here, or click to browse</p>
+            <p class="hint">JPG, PNG, WebP &middot; Max 10 MB</p>
+          </div>
+          <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp" hidden>
+        </div>
+
+        <div id="previewContainer" class="preview-container hidden">
+          <img id="previewImage" alt="Preview" class="preview-image">
+          <button id="removePreview" class="btn btn-outline btn-sm">Remove</button>
+        </div>
+
+        <button id="uploadBtn" class="btn btn-primary btn-full" disabled>
+          Upload Photo
+        </button>
+
+        <div id="uploadProgress" class="progress hidden">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <p id="uploadStatus" class="status-text hidden"></p>
+        <p id="uploadError" class="error-text hidden"></p>
+      </div>
+
+      <section class="recent-section">
+        <h3>Your Recent Uploads</h3>
+        <div id="recentLoading" class="loading">Loading...</div>
+        <div id="recentEmpty" class="empty-state hidden">
+          <p>You haven't uploaded any photos yet.</p>
+        </div>
+        <div id="recentError" class="error-text hidden"></div>
+        <div id="recentGrid" class="recent-grid"></div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Powered by <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a> &amp; GitHub Pages</p>
+  </footer>
+</body>
+</html>

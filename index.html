@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bhaiya Spotter — Leaderboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/supabase-client.js"></script>
+  <script defer src="js/auth.js"></script>
+  <script defer src="js/leaderboard.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">Bhaiya Spotter</a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">Leaderboard</a>
+        <a href="upload.html" class="nav-link">Upload</a>
+        <span class="nav-user" id="navUser"></span>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <!-- Auth section -->
+    <section id="authSection" class="card auth-card">
+      <h2>Join the Spotting</h2>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Sign In</button>
+        <button class="auth-tab" data-tab="signup">Sign Up</button>
+      </div>
+
+      <form id="loginForm" class="auth-form">
+        <input type="email" id="loginEmail" placeholder="Email" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+      </form>
+
+      <form id="signupForm" class="auth-form hidden">
+        <input type="text" id="signupName" placeholder="Display Name" required minlength="2">
+        <input type="email" id="signupEmail" placeholder="Email" required>
+        <input type="password" id="signupPassword" placeholder="Password" required minlength="6">
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+      </form>
+
+      <p id="authError" class="error-text hidden"></p>
+    </section>
+
+    <!-- Welcome (logged in) section -->
+    <section id="welcomeSection" class="card hidden">
+      <div class="welcome-row">
+        <div>
+          <h2>Welcome, <span id="welcomeName"></span></h2>
+          <p class="subtitle">Ready to spot Bhaiya?</p>
+        </div>
+        <div class="welcome-actions">
+          <a href="upload.html" class="btn btn-primary">Upload Photo</a>
+          <button id="signoutBtn" class="btn btn-outline">Sign Out</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leaderboard -->
+    <section class="leaderboard-section">
+      <h2>Leaderboard</h2>
+      <p class="subtitle">Rankings based on photo count (70%) and upload frequency (30%) in the last 30 days.</p>
+      <div id="leaderboardLoading" class="loading">Loading rankings...</div>
+      <div id="leaderboardError" class="error-text hidden"></div>
+      <div id="leaderboardEmpty" class="empty-state hidden">
+        <p>No submissions yet. Be the first to spot Bhaiya!</p>
+        <a href="upload.html" class="btn btn-primary">Upload a Photo</a>
+      </div>
+      <div class="table-wrapper">
+        <table id="leaderboardTable" class="leaderboard-table hidden">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Spotter</th>
+              <th>Photos</th>
+              <th>Active Days</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Powered by <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a> &amp; GitHub Pages</p>
+  </footer>
+</body>
+</html>
