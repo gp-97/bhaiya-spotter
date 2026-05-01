@@ -12,12 +12,15 @@ CREATE TABLE IF NOT EXISTS profiles (
 
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Profiles are viewable by everyone" ON profiles;
 CREATE POLICY "Profiles are viewable by everyone"
   ON profiles FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can insert their own profile" ON profiles;
 CREATE POLICY "Users can insert their own profile"
   ON profiles FOR INSERT WITH CHECK (auth.uid() = id);
 
+DROP POLICY IF EXISTS "Users can update their own profile" ON profiles;
 CREATE POLICY "Users can update their own profile"
   ON profiles FOR UPDATE USING (auth.uid() = id);
 
@@ -50,12 +53,15 @@ CREATE INDEX idx_submissions_uploaded_at ON submissions(uploaded_at);
 
 ALTER TABLE submissions ENABLE ROW LEVEL SECURITY;
 
+DROP POLICY IF EXISTS "Submissions are viewable by everyone" ON submissions;
 CREATE POLICY "Submissions are viewable by everyone"
   ON submissions FOR SELECT USING (true);
 
+DROP POLICY IF EXISTS "Users can insert their own submissions" ON submissions;
 CREATE POLICY "Users can insert their own submissions"
   ON submissions FOR INSERT WITH CHECK (auth.uid() = user_id);
 
+DROP POLICY IF EXISTS "Users can delete their own submissions" ON submissions;
 CREATE POLICY "Users can delete their own submissions"
   ON submissions FOR DELETE USING (auth.uid() = user_id);
 
@@ -64,16 +70,19 @@ CREATE POLICY "Users can delete their own submissions"
 -- Run these in SQL Editor AFTER creating the 'submissions' bucket via the dashboard
 
 -- Allow anyone to read files from the submissions bucket
+DROP POLICY IF EXISTS "Public read access for submissions" ON storage.objects;
 CREATE POLICY "Public read access for submissions"
   ON storage.objects FOR SELECT
   USING (bucket_id = 'submissions');
 
 -- Allow authenticated users to upload files
+DROP POLICY IF EXISTS "Authenticated users can upload to submissions" ON storage.objects;
 CREATE POLICY "Authenticated users can upload to submissions"
   ON storage.objects FOR INSERT
   WITH CHECK (bucket_id = 'submissions' AND auth.role() = 'authenticated');
 
 -- Allow users to delete their own uploads
+DROP POLICY IF EXISTS "Users can delete their own uploads" ON storage.objects;
 CREATE POLICY "Users can delete their own uploads"
   ON storage.objects FOR DELETE
   USING (bucket_id = 'submissions' AND owner = auth.uid());
