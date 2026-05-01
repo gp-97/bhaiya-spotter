@@ -277,6 +277,30 @@ async function handleVote(submissionId, value) {
   }
 
   loadVotes(submissionId);
+  updateCardVoteCount(submissionId);
+}
+
+async function updateCardVoteCount(submissionId) {
+  const { data } = await supabase
+    .from('votes')
+    .select('value')
+    .eq('submission_id', submissionId);
+
+  const ups = (data || []).filter(v => v.value === 1).length;
+  const downs = (data || []).filter(v => v.value === -1).length;
+  const score = ups - downs;
+
+  const idx = loadedPhotos.findIndex(p => p.id === submissionId);
+  if (idx === -1) return;
+  loadedPhotos[idx].votes_up = ups;
+  loadedPhotos[idx].votes_down = downs;
+
+  const cards = document.querySelectorAll('.gallery-card');
+  const card = cards[idx];
+  if (card) {
+    const voteCount = card.querySelector('.card-vote-count');
+    if (voteCount) voteCount.textContent = score;
+  }
 }
 
 async function loadMore() {
