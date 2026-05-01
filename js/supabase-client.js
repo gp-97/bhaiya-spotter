@@ -1,4 +1,13 @@
 const SUPABASE_URL = 'https://igdptasnxeszanlfqade.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlnZHB0YXNueGVzemFubGZxYWRlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MjE5MjMsImV4cCI6MjA5MzE5NzkyM30.WtcEI6BeZzFVXJxcxd1sAxzsLfs8ZwaiTH_Jfmjb4uo';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+var supabase;
+
+try {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  if (!supabase || !supabase.auth) {
+    console.error('Supabase client created but missing .auth', supabase);
+  }
+} catch (e) {
+  console.error('Failed to create Supabase client:', e.message);
+}
