@@ -1073,6 +1073,12 @@ body {
     font-size: 0.6rem;
   }
 
+  .user-dropdown {
+    right: 0;
+    left: 0;
+    min-width: auto;
+  }
+
   .container {
     padding: 16px 16px 40px;
   }
@@ -1143,6 +1149,17 @@ body {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .user-menu-btn {
+    font-size: 0.78rem;
+    padding: 4px 8px;
+    gap: 6px;
+  }
+
+  .user-dropdown {
+    left: auto;
+    right: 0;
+  }
 }
 
 @media (max-width: 600px) {
@@ -1161,6 +1178,15 @@ body {
     gap: 2px;
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .user-menu-btn {
+    font-size: 0.75rem;
+  }
+
+  .user-dropdown {
+    right: 0;
+    left: auto;
   }
 
   .nav-link {
