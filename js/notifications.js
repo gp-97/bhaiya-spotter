@@ -38,25 +38,21 @@ function initRealtimeNotifications(userId) {
       .on('postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'submissions' },
         (payload) => {
-          if (payload.new.user_id !== userId) {
-            showToast(
-              `${payload.new.profiles?.display_name || 'Someone'} uploaded a new photo`,
-              '&#128247;',
-              'gallery.html'
-            );
-          }
+          showToast(
+            `${payload.new.profiles?.display_name || 'Someone'} uploaded a new photo`,
+            '&#128247;',
+            'gallery.html'
+          );
         }
       )
       .on('postgres_changes',
         { event: 'INSERT', schema: 'public', table: 'comments' },
         (payload) => {
-          if (payload.new.user_id !== userId) {
-            showToast(
-              `${payload.new.profiles?.display_name || 'Someone'} commented on a photo`,
-              '&#128172;',
-              'gallery.html'
-            );
-          }
+          showToast(
+            `${payload.new.profiles?.display_name || 'Someone'} commented on a photo`,
+            '&#128172;',
+            'gallery.html'
+          );
         }
       )
       .subscribe();
