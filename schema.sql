@@ -21,6 +21,21 @@ CREATE POLICY "Users can insert their own profile"
 CREATE POLICY "Users can update their own profile"
   ON profiles FOR UPDATE USING (auth.uid() = id);
 
+-- Auto-create a profile row whenever a new user signs up
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, display_name)
+  VALUES (NEW.id, COALESCE(NEW.raw_user_meta_data ->> 'display_name', split_part(NEW.email, '@', 1)));
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
 
 -- 2. SUBMISSIONS TABLE (photo uploads)
 CREATE TABLE IF NOT EXISTS submissions (
@@ -45,21 +60,20 @@ CREATE POLICY "Users can delete their own submissions"
   ON submissions FOR DELETE USING (auth.uid() = user_id);
 
 
--- 3. STORAGE BUCKET (run these individually if the bucket doesn't exist yet)
+-- 3. STORAGE BUCKET RLS POLICIES
+-- Run these in SQL Editor AFTER creating the 'submissions' bucket via the dashboard
 
--- Create a public bucket called 'submissions'. Run this first:
--- INSERT INTO storage.buckets (id, name, public) VALUES ('submissions', 'submissions', true);
+-- Allow anyone to read files from the submissions bucket
+CREATE POLICY "Public read access for submissions"
+  ON storage.objects FOR SELECT
+  USING (bucket_id = 'submissions');
 
--- Then set RLS policies on storage.objects:
+-- Allow authenticated users to upload files
+CREATE POLICY "Authenticated users can upload to submissions"
+  ON storage.objects FOR INSERT
+  WITH CHECK (bucket_id = 'submissions' AND auth.role() = 'authenticated');
 
--- CREATE POLICY "Public read access for submissions"
---   ON storage.objects FOR SELECT
---   USING (bucket_id = 'submissions');
-
--- CREATE POLICY "Authenticated users can upload to submissions"
---   ON storage.objects FOR INSERT
---   WITH CHECK (bucket_id = 'submissions' AND auth.role() = 'authenticated');
-
--- CREATE POLICY "Users can delete their own uploads"
---   ON storage.objects FOR DELETE
---   USING (bucket_id = 'submissions' AND owner = auth.uid());
+-- Allow users to delete their own uploads
+CREATE POLICY "Users can delete their own uploads"
+  ON storage.objects FOR DELETE
+  USING (bucket_id = 'submissions' AND owner = auth.uid());
