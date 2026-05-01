@@ -248,6 +248,17 @@ body::before {
   margin: 0 auto clamp(1rem, 3vw, 1.5rem);
 }
 
+.container.centered-auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container.centered-auth .auth-card {
+  margin: 0;
+  width: 100%;
+}
+
 .auth-tabs {
   display: flex;
   margin-bottom: clamp(0.75rem, 2vw, 1.25rem);
