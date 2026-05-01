@@ -1367,6 +1367,64 @@ body::before {
   to { transform: rotate(360deg); }
 }
 
+/* Toast notifications */
+.toast {
+  position: fixed;
+  bottom: clamp(1rem, 3vw, 1.5rem);
+  right: clamp(1rem, 3vw, 1.5rem);
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  padding: clamp(0.6rem, 1.5vw, 0.75rem) clamp(0.75rem, 2vw, 1rem);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 2000;
+  transform: translateY(1rem);
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  max-width: min(95vw, 24rem);
+}
+
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toast-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.toast-text {
+  font-size: clamp(0.78rem, 2vw, 0.88rem);
+  color: var(--text);
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-link {
+  font-size: clamp(0.75rem, 1.8vw, 0.82rem);
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 /* Footer */
 .footer {
   text-align: center;

@@ -178,3 +178,43 @@ DROP POLICY IF EXISTS "Users can delete their own uploads" ON storage.objects;
 CREATE POLICY "Users can delete their own uploads"
   ON storage.objects FOR DELETE
   USING (bucket_id = 'submissions' AND owner = auth.uid());
+
+
+-- 7. EMAIL NOTIFICATION TRIGGERS (Requires pg_net extension and deployed edge function)
+-- Enable the extension first:
+-- CREATE EXTENSION IF NOT EXISTS pg_net;
+
+-- Then create the trigger function:
+-- CREATE OR REPLACE FUNCTION notify_email()
+-- RETURNS TRIGGER AS $$
+-- DECLARE
+--   actor_name TEXT;
+--   event_type TEXT;
+-- BEGIN
+--   SELECT display_name INTO actor_name FROM profiles WHERE id = NEW.user_id;
+--
+--   IF TG_TABLE_NAME = 'submissions' THEN
+--     event_type := 'new_submission';
+--   ELSIF TG_TABLE_NAME = 'comments' THEN
+--     event_type := 'new_comment';
+--   END IF;
+--
+--   PERFORM net.http_post(
+--     url := 'https://igdptasnxeszanlfqade.supabase.co/functions/v1/notify-email',
+--     headers := '{"Content-Type": "application/json", "Authorization": "Bearer YOUR_SUPABASE_ANON_KEY"}'::jsonb,
+--     body := json_build_object('event', event_type, 'actorName', actor_name)::text
+--   );
+--   RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Drop and create triggers
+-- DROP TRIGGER IF EXISTS on_new_submission_notify ON submissions;
+-- CREATE TRIGGER on_new_submission_notify
+--   AFTER INSERT ON submissions
+--   FOR EACH ROW EXECUTE FUNCTION notify_email();
+
+-- DROP TRIGGER IF EXISTS on_new_comment_notify ON comments;
+-- CREATE TRIGGER on_new_comment_notify
+--   AFTER INSERT ON comments
+--   FOR EACH ROW EXECUTE FUNCTION notify_email();
