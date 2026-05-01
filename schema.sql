@@ -77,6 +77,7 @@ CREATE TABLE IF NOT EXISTS comments (
 );
 
 ALTER TABLE comments ADD COLUMN IF NOT EXISTS parent_id BIGINT REFERENCES comments(id) ON DELETE CASCADE;
+ALTER TABLE comments ADD COLUMN IF NOT EXISTS is_deleted BOOLEAN DEFAULT false;
 
 CREATE INDEX IF NOT EXISTS idx_comments_submission_id ON comments(submission_id);
 CREATE INDEX IF NOT EXISTS idx_comments_parent_id ON comments(parent_id);

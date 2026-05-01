@@ -145,7 +145,7 @@ async function loadComments(submissionId) {
 
   const { data, error } = await supabase
     .from('comments')
-    .select(`id, content, created_at, parent_id, user_id, profiles(display_name)`)
+    .select(`id, content, created_at, parent_id, user_id, is_deleted, profiles(display_name)`)
     .eq('submission_id', submissionId)
     .order('created_at', { ascending: true });
 
@@ -190,9 +190,24 @@ async function fetchCommentVotes(commentIds) {
 function renderCommentItem(c, isReply, voteData) {
   const vd = voteData || { ups: 0, downs: 0, userVote: 0 };
   const score = vd.ups - vd.downs;
+  const isDeleted = c.is_deleted;
   const div = document.createElement('div');
-  div.className = 'comment-item' + (isReply ? ' comment-reply' : '');
+  div.className = 'comment-item' + (isReply ? ' comment-reply' : '') + (isDeleted ? ' comment-deleted' : '');
   div.dataset.commentId = c.id;
+
+  if (isDeleted) {
+    div.innerHTML = `
+      <div class="comment-avatar">${avatarHtml(c.profiles.display_name)}</div>
+      <div class="comment-body">
+        <div class="comment-header">
+          <span class="comment-name">${escapeHtml(c.profiles.display_name)}</span>
+          <span class="comment-time">${timeAgo(c.created_at)}</span>
+        </div>
+        <p class="comment-content deleted-text">Original comment has been deleted by the user</p>
+      </div>`;
+    return div;
+  }
+
   div.innerHTML = `
     <div class="comment-avatar">${avatarHtml(c.profiles.display_name)}</div>
     <div class="comment-body">
@@ -378,7 +393,7 @@ async function handleCommentVote(commentId, value) {
 }
 
 async function deleteComment(commentId, submissionId) {
-  await supabase.from('comments').delete().eq('id', commentId);
+  await supabase.from('comments').update({ is_deleted: true }).eq('id', commentId);
   await loadComments(submissionId);
 }
 

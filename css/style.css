@@ -1247,6 +1247,16 @@ body::before {
   color: var(--error);
 }
 
+.comment-deleted {
+  opacity: 0.55;
+}
+
+.deleted-text {
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: clamp(0.72rem, 2vw, 0.82rem);
+}
+
 .delete-submission-btn {
   display: none;
 }
