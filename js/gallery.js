@@ -2,6 +2,8 @@ const PAGE_SIZE = 12;
 let currentOffset = 0;
 let hasMore = true;
 let loading = false;
+let loadedPhotos = [];
+let lightboxIndex = -1;
 
 function timeAgo(dateStr) {
   const now = new Date();
@@ -16,6 +18,17 @@ function timeAgo(dateStr) {
   const days = Math.floor(hours / 24);
   if (days < 30) return `${days}d ago`;
   return date.toLocaleDateString();
+}
+
+function fullDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
 }
 
 function escapeHtml(str) {
@@ -40,7 +53,7 @@ async function fetchGallery(offset, limit) {
   return data;
 }
 
-function renderPhoto(item) {
+function renderPhoto(item, index) {
   const card = document.createElement('div');
   card.className = 'gallery-card';
 
@@ -57,21 +70,34 @@ function renderPhoto(item) {
   const imageDiv = card.querySelector('.gallery-card-image');
   imageDiv.style.cursor = 'pointer';
   imageDiv.addEventListener('click', () => {
-    openLightbox(item.image_url, item.profiles.display_name, item.uploaded_at);
+    openLightbox(index);
   });
 
   return card;
 }
 
-function openLightbox(url, name, dateStr) {
+function openLightbox(index) {
+  const item = loadedPhotos[index];
+  if (!item) return;
+
+  lightboxIndex = index;
+
   const lightbox = document.getElementById('lightbox');
   const lightboxImage = document.getElementById('lightboxImage');
   const lightboxName = document.getElementById('lightboxName');
   const lightboxTime = document.getElementById('lightboxTime');
+  const lightboxCounter = document.getElementById('lightboxCounter');
 
-  lightboxImage.src = url;
-  lightboxName.textContent = name;
-  lightboxTime.textContent = timeAgo(dateStr);
+  lightboxImage.src = item.image_url;
+  lightboxName.textContent = item.profiles.display_name;
+  lightboxTime.textContent = fullDate(item.uploaded_at);
+  lightboxCounter.textContent = `${index + 1} of ${loadedPhotos.length}`;
+
+  const prevBtn = document.getElementById('lightboxPrev');
+  const nextBtn = document.getElementById('lightboxNext');
+  prevBtn.style.visibility = index > 0 ? 'visible' : 'hidden';
+  nextBtn.style.visibility = index < loadedPhotos.length - 1 ? 'visible' : 'hidden';
+
   lightbox.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
 }
@@ -82,7 +108,15 @@ function closeLightbox() {
 
   lightbox.classList.add('hidden');
   lightboxImage.src = '';
+  lightboxIndex = -1;
   document.body.style.overflow = '';
+}
+
+function navigateLightbox(direction) {
+  const newIndex = lightboxIndex + direction;
+  if (newIndex >= 0 && newIndex < loadedPhotos.length) {
+    openLightbox(newIndex);
+  }
 }
 
 async function loadMore() {
@@ -113,7 +147,8 @@ async function loadMore() {
     }
 
     photos.forEach(item => {
-      galleryGrid.appendChild(renderPhoto(item));
+      loadedPhotos.push(item);
+      galleryGrid.appendChild(renderPhoto(item, loadedPhotos.length - 1));
     });
 
     currentOffset += photos.length;
@@ -145,6 +180,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loadMoreBtn = document.getElementById('loadMoreBtn');
   const lightbox = document.getElementById('lightbox');
   const lightboxClose = document.getElementById('lightboxClose');
+  const lightboxPrev = document.getElementById('lightboxPrev');
+  const lightboxNext = document.getElementById('lightboxNext');
 
   const user = await getCurrentUser();
 
@@ -165,6 +202,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     lightboxClose.addEventListener('click', closeLightbox);
   }
 
+  if (lightboxPrev) {
+    lightboxPrev.addEventListener('click', () => navigateLightbox(-1));
+  }
+
+  if (lightboxNext) {
+    lightboxNext.addEventListener('click', () => navigateLightbox(1));
+  }
+
   if (lightbox) {
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) closeLightbox();
@@ -172,9 +217,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && lightbox && !lightbox.classList.contains('hidden')) {
-      closeLightbox();
-    }
+    if (!lightbox || lightbox.classList.contains('hidden')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') navigateLightbox(-1);
+    if (e.key === 'ArrowRight') navigateLightbox(1);
   });
 
   if (document.getElementById('galleryGrid')) {
