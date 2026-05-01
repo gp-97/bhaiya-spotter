@@ -108,6 +108,14 @@ body::before {
   text-decoration: none;
   flex-shrink: 0;
   letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo {
+  height: clamp(2rem, 6vw, 2.5rem);
+  width: auto;
+  border-radius: 8px;
 }
 
 .nav-links {
