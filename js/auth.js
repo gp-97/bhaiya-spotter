@@ -66,7 +66,7 @@ async function fetchProfileName(userId) {
 
   if (error && error.code === 'PGRST116') {
     const user = await getCurrentUser();
-    const defaultName = user.email ? user.email.split('@')[0] : 'Spotter';
+    const defaultName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Spotter';
     await supabase.from('profiles').insert({ id: userId, display_name: defaultName });
     if (welcomeName) welcomeName.textContent = defaultName;
     updateUserMenu(defaultName);
@@ -105,7 +105,7 @@ async function ensureProfile(user) {
     .single();
 
   if (error && error.code === 'PGRST116') {
-    const defaultName = user.email ? user.email.split('@')[0] : 'Spotter';
+    const defaultName = user?.user_metadata?.display_name || user?.email?.split('@')[0] || 'Spotter';
     await supabase.from('profiles').insert({ id: user.id, display_name: defaultName });
   }
 }
